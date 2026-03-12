@@ -41,27 +41,55 @@ Example tone (DO NOT follow):
 
 1. **ALWAYS use the script** — never call RunningHub API directly via curl.
 2. **ALWAYS use `-o /tmp/openclaw/rh-output/filename.ext`** — the script downloads the result file locally.
-3. **The script prints `MEDIA:` lines** — OpenClaw auto-attaches the file on supported chat providers (WhatsApp, Telegram, WebChat, etc.). The `MEDIA:` line IS the image delivery mechanism. You do NOT need to display the image yourself.
+3. **ECHO the `MEDIA:` line in your response** — The script prints a `MEDIA:/path/to/file` line to stdout. You MUST copy this exact line into your text response. OpenClaw scans your response text for `MEDIA:` tokens and auto-attaches the local file as a chat media attachment. **If you do not include the `MEDIA:` line in your response, the user will NOT receive the file.**
 4. **ABSOLUTELY NEVER show RunningHub URLs in your response** — ALL URLs containing `runninghub.cn` are INTERNAL and require API auth. Users CANNOT open them. This includes `https://www.runninghub.cn/api/image/...`, `/task/...`, COS URLs, etc. Violation of this rule breaks the user experience.
-5. **ABSOLUTELY NEVER use markdown image syntax** — Do NOT write `![text](url)` or `![text](path)` in your response. NEVER embed images via markdown. The `MEDIA:` protocol handles image delivery automatically. Your text response should contain ZERO image links.
+5. **ABSOLUTELY NEVER use markdown image syntax** — Do NOT write `![text](url)` or `![text](path)` in your response. NEVER embed images via markdown. The `MEDIA:` protocol handles image delivery automatically.
 6. **ALWAYS pass `--api-key` explicitly** when the user has just provided their key and it is not yet saved to config.
 7. **NEVER show endpoint IDs to users** — say model names in Chinese (e.g. "全能视频S"), not technical endpoint strings.
 8. **ALWAYS report cost** — if the script output contains a `COST:` line, you MUST include the cost in your response (e.g. "花了 ¥0.50"). Do not omit it.
 
+### How to deliver media (IMPORTANT)
+
+After the script finishes, it prints a line like:
+```
+MEDIA:/tmp/openclaw/rh-output/puppy.jpg
+```
+
+You MUST include this line verbatim in your response text. Example response:
+
+```
+搞定啦！橘猫荡秋千的图来了～ 花了 ¥0.12
+
+MEDIA:/tmp/openclaw/rh-output/2026-03-13-cat-swing.jpg
+
+小猫在花园里荡秋千的样子超可爱的！要不要我帮它做成动态视频？🐱
+```
+
+OpenClaw will: (1) strip the `MEDIA:` line from the visible text, (2) load the local file, (3) send it as a native media attachment. The user sees ONLY your text + the image/video/audio file.
+
 ### Common Mistakes — NEVER do these
 
-❌ **WRONG** (shows broken URL + markdown image):
+❌ **WRONG** (no MEDIA line, shows broken RunningHub URL):
 > 为你生成了一张橘猫荡秋千的图片。
 > ![橘猫荡秋千](https://www.runninghub.cn/api/image/2032169891297370114/output.png)
 > 看看这张"猫咪秋千照"，是不是很治愈？
 
-❌ Why it's wrong: RunningHub URL can't be opened by user, markdown image won't render, cost not shown.
+❌ Why it's wrong: No `MEDIA:` line → user gets no file. RunningHub URL can't be opened. Markdown image won't render.
 
-✅ **CORRECT** (no URL, no markdown image, cost included):
-> 搞定啦！橘猫荡秋千的图已经发给你了～ 花了 ¥0.12
+❌ **WRONG** (claims file was sent but missing MEDIA line):
+> 图片已经作为附件发送给你了～ 花了 ¥0.12
+> 要不要做成视频？
+
+❌ Why it's wrong: Without the actual `MEDIA:/path` line in your response, OpenClaw has no way to attach the file. The user receives nothing.
+
+✅ **CORRECT** (includes MEDIA line from script output):
+> 搞定啦！橘猫荡秋千的图来了～ 花了 ¥0.12
+>
+> MEDIA:/tmp/openclaw/rh-output/2026-03-13-cat-swing.jpg
+>
 > 小猫在花园里荡秋千的样子超可爱的！要不要我帮它做成动态视频？🐱
 
-✅ Why it's correct: Image is delivered via `MEDIA:` protocol (automatic), response is warm with cost, no broken URLs.
+✅ Why it's correct: The `MEDIA:` line triggers OpenClaw to attach the file. No broken URLs. Cost included. Warm tone.
 
 ## API key setup flow
 
@@ -381,21 +409,52 @@ The script outputs structured JSON errors. React based on the `error` field:
 
 ### Media results (image/video/audio/3D)
 
-The script prints a `MEDIA:` line for OpenClaw to auto-attach on supported chat providers:
+The script prints a `MEDIA:` line to stdout after downloading the result:
 ```
-MEDIA:/tmp/openclaw/rh-output/puppy.png
+MEDIA:/tmp/openclaw/rh-output/puppy.jpg
 ```
 
-**How image delivery works**: OpenClaw automatically intercepts the `MEDIA:` line, loads the local file, and sends it as a native media attachment (image/video/audio) to the user's chat (WhatsApp, Telegram, WebChat, etc.). The user receives the actual file — you do NOT need to show it.
+**YOU MUST echo this `MEDIA:` line in your text response.** OpenClaw scans your outgoing message for `MEDIA:` tokens, strips them from the visible text, loads the local file, and sends it as a native chat attachment. If you omit the `MEDIA:` line from your response, the user will NOT receive the file.
 
-**Your response should be TEXT ONLY.** No `![](...)`, no URLs, no file paths. Just describe what was generated, include the cost, and suggest next steps.
+**Template for media responses:**
+
+```
+<your warm text about what was generated, include cost>
+
+MEDIA:<exact path from script output>
+
+<optional follow-up suggestion>
+```
 
 Example responses by media type:
 
-- **Image**: "搞定啦！橘猫荡秋千的图已经发给你了～ 花了 ¥0.12。要不要我帮你把它做成视频？🐱"
-- **Video**: "视频来啦～ 用万相2.6生成的，花了 ¥0.35。画面还满意吗？我还能帮你加配音或者做个封面图哦！"
-- **Audio**: "语音生成好了！花了 ¥0.05。试听一下，不满意我可以换个音色再来～"
-- **3D**: "3D 模型搞定！花了 ¥1.20。文件是 GLB 格式，可以直接导入 Blender 或者在浏览器里预览哦～"
+- **Image**:
+  > 搞定啦！橘猫荡秋千的图来了～ 花了 ¥0.12
+  >
+  > MEDIA:/tmp/openclaw/rh-output/2026-03-13-cat-swing.jpg
+  >
+  > 要不要我帮你把它做成视频？🐱
+
+- **Video**:
+  > 视频来啦～ 用万相2.6生成的，花了 ¥0.35
+  >
+  > MEDIA:/tmp/openclaw/rh-output/2026-03-13-dance-video.mp4
+  >
+  > 画面还满意吗？我还能帮你加配音或者做个封面图哦！
+
+- **Audio**:
+  > 语音生成好了！花了 ¥0.05
+  >
+  > MEDIA:/tmp/openclaw/rh-output/2026-03-13-voice.mp3
+  >
+  > 试听一下，不满意我可以换个音色再来～
+
+- **3D**:
+  > 3D 模型搞定！花了 ¥1.20
+  >
+  > MEDIA:/tmp/openclaw/rh-output/2026-03-13-model.glb
+  >
+  > 文件是 GLB 格式，可以直接导入 Blender 或者在浏览器里预览哦～
 
 ### Cost reporting
 
