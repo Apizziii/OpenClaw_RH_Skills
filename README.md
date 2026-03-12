@@ -16,37 +16,16 @@ Universal media generation skill for [OpenClaw](https://github.com/openclaw/open
 
 ## Quick start
 
-### 1. Install the skill
+In your OpenClaw chat, say:
 
-```bash
-# Copy script + data
-mkdir -p /root/.openclaw/workspace/scripts /root/.openclaw/workspace/data
-cp /data/RHClaw/runninghub/scripts/runninghub.py /root/.openclaw/workspace/scripts/runninghub.py
-cp /data/RHClaw/runninghub/data/capabilities.json /root/.openclaw/workspace/data/capabilities.json
-chmod +x /root/.openclaw/workspace/scripts/runninghub.py
+> Install the RunningHub skill from https://github.com/HM-RunningHub/OpenClaw_RH_Skills
 
-# Copy skill definition
-mkdir -p /root/.openclaw/workspace/skills/runninghub
-cp /data/RHClaw/runninghub/SKILL.md /root/.openclaw/workspace/skills/runninghub/SKILL.md
-```
+The assistant will clone the repo, copy files to the workspace, and guide you through API key setup.
 
-### 2. Configure API key
+### Prerequisites
 
-Get your API key from [RunningHub API Management](https://www.runninghub.cn/enterprise-api/sharedApi), then:
-
-```bash
-openclaw skills config runninghub RUNNINGHUB_API_KEY <your-key>
-```
-
-Make sure your [wallet has balance](https://www.runninghub.cn/vip-rights/4) — API calls require funds.
-
-### 3. Verify setup
-
-```bash
-python3 /root/.openclaw/workspace/scripts/runninghub.py --check
-```
-
-Should return `{"status": "ready", ...}` with your balance.
+- **API Key** — Get one from [RunningHub API Management](https://www.runninghub.cn/enterprise-api/sharedApi) (click "新建")
+- **Wallet balance** — [Recharge here](https://www.runninghub.cn/vip-rights/4) — API calls require funds
 
 ## Usage
 
