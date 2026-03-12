@@ -613,7 +613,7 @@ def cmd_execute(args):
     output_path = args.output
     if not output_path:
         ext = output_type_ext or _guess_ext(endpoint_def["output_type"])
-        output_path = f"/tmp/rh-output/result.{ext}"
+        output_path = f"/tmp/openclaw/rh-output/result.{ext}"
 
     if output_type_ext:
         output_path = str(Path(output_path).with_suffix(f".{output_type_ext}"))

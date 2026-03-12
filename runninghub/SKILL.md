@@ -23,7 +23,7 @@ Data: `{baseDir}/data/capabilities.json`
 ## CRITICAL RULES — Read before anything else
 
 1. **ALWAYS use the script** — never call RunningHub API directly via curl.
-2. **ALWAYS use `-o /tmp/rh-output/filename.ext`** — the script downloads the result file locally.
+2. **ALWAYS use `-o /tmp/openclaw/rh-output/filename.ext`** — the script downloads the result file locally.
 3. **The script prints `MEDIA:` lines** — OpenClaw auto-attaches the file on supported chat providers (WhatsApp, Telegram, WebChat, etc.). Do not read the image back; report the saved path only.
 4. **NEVER show RunningHub URLs** — ALL RunningHub URLs (`https://www.runninghub.cn/api/image/...`, `/task/...`, etc.) are INTERNAL and require API authentication. Users CANNOT open them. Do NOT include them in your response.
 5. **ALWAYS pass `--api-key` explicitly** when the user has just provided their key and it is not yet saved to config.
@@ -86,7 +86,7 @@ Do NOT attempt any generation until `--check` returns `"ready"` with balance > 0
 ## Execution policy
 
 - When user asks to generate/edit media, run immediately using the script.
-- ALWAYS include `-o /tmp/rh-output/<descriptive-name>.<ext>` to save the result locally.
+- ALWAYS include `-o /tmp/openclaw/rh-output/<descriptive-name>.<ext>` to save the result locally.
 - Use timestamps in filenames: `yyyy-mm-dd-hh-mm-ss-name.ext`.
 - Do not pass placeholder values like `your_api_key_here`.
 - If the script returns an error JSON, react based on the `error` field (see Error Handling below).
@@ -159,7 +159,7 @@ python3 {baseDir}/scripts/runninghub.py \
   --endpoint rhart-image-n-pro/text-to-image \
   --prompt "a cute puppy playing on green grass, 4K cinematic lighting" \
   --param resolution=2k --param aspectRatio=16:9 \
-  --output /tmp/runninghub-output/puppy.png
+  --output /tmp/openclaw/rh-output/puppy.png
 ```
 
 ### Image to image (edit)
@@ -168,9 +168,9 @@ python3 {baseDir}/scripts/runninghub.py \
 python3 {baseDir}/scripts/runninghub.py \
   --endpoint rhart-image-n-pro/edit \
   --prompt "change the background to a cyberpunk city at night" \
-  --image /tmp/runninghub-output/puppy.png \
+  --image /tmp/openclaw/rh-output/puppy.png \
   --param resolution=2k \
-  --output /tmp/runninghub-output/puppy-edited.png
+  --output /tmp/openclaw/rh-output/puppy-edited.png
 ```
 
 ### Text to video
@@ -180,7 +180,7 @@ python3 {baseDir}/scripts/runninghub.py \
   --endpoint rhart-video-s/text-to-video \
   --prompt "a puppy running through a meadow, cinematic slow motion" \
   --param duration=10 --param aspectRatio=16:9 \
-  --output /tmp/runninghub-output/puppy-video.mp4
+  --output /tmp/openclaw/rh-output/puppy-video.mp4
 ```
 
 ### Image to video
@@ -189,9 +189,9 @@ python3 {baseDir}/scripts/runninghub.py \
 python3 {baseDir}/scripts/runninghub.py \
   --endpoint rhart-video-s/image-to-video \
   --prompt "the puppy starts running and wagging its tail" \
-  --image /tmp/runninghub-output/puppy.png \
+  --image /tmp/openclaw/rh-output/puppy.png \
   --param duration=10 \
-  --output /tmp/runninghub-output/puppy-animated.mp4
+  --output /tmp/openclaw/rh-output/puppy-animated.mp4
 ```
 
 ### Text to speech
@@ -201,7 +201,7 @@ python3 {baseDir}/scripts/runninghub.py \
   --endpoint rhart-audio/text-to-audio/speech-2.8-hd \
   --prompt "Hello! Welcome to RunningHub, your AI creation platform." \
   --param voiceId=male-qn-qingse \
-  --output /tmp/runninghub-output/speech.mp3
+  --output /tmp/openclaw/rh-output/speech.mp3
 ```
 
 ### Music generation
@@ -211,7 +211,7 @@ python3 {baseDir}/scripts/runninghub.py \
   --endpoint rhart-audio/text-to-audio/music-2.5 \
   --prompt "upbeat electronic dance music, 128 BPM, energetic" \
   --param lyrics="[Verse 1] Feel the beat..." \
-  --output /tmp/runninghub-output/music.mp3
+  --output /tmp/openclaw/rh-output/music.mp3
 ```
 
 ### Image to 3D
@@ -219,9 +219,9 @@ python3 {baseDir}/scripts/runninghub.py \
 ```bash
 python3 {baseDir}/scripts/runninghub.py \
   --endpoint hunyuan3d-v3.1/image-to-3d \
-  --image /tmp/runninghub-output/object.png \
+  --image /tmp/openclaw/rh-output/object.png \
   --param enablePbr=true \
-  --output /tmp/runninghub-output/model.glb
+  --output /tmp/openclaw/rh-output/model.glb
 ```
 
 ### Image upscale
@@ -229,9 +229,9 @@ python3 {baseDir}/scripts/runninghub.py \
 ```bash
 python3 {baseDir}/scripts/runninghub.py \
   --endpoint topazlabs/image-upscale-standard-v2 \
-  --image /tmp/runninghub-output/photo.png \
+  --image /tmp/openclaw/rh-output/photo.png \
   --param scale=4x \
-  --output /tmp/runninghub-output/photo-upscaled.png
+  --output /tmp/openclaw/rh-output/photo-upscaled.png
 ```
 
 ### Auto-select best endpoint (shortcut)
@@ -240,7 +240,7 @@ python3 {baseDir}/scripts/runninghub.py \
 python3 {baseDir}/scripts/runninghub.py \
   --task text-to-image \
   --prompt "a beautiful sunset over the ocean" \
-  --output /tmp/runninghub-output/sunset.png
+  --output /tmp/openclaw/rh-output/sunset.png
 ```
 
 ## Discover more endpoints
@@ -297,7 +297,7 @@ The script outputs structured JSON errors. React based on the `error` field:
 
 The script prints a `MEDIA:` line for OpenClaw to auto-attach on supported chat providers:
 ```
-MEDIA:/tmp/rh-output/puppy.png
+MEDIA:/tmp/openclaw/rh-output/puppy.png
 ```
 
 OpenClaw automatically parses this, loads the file, and sends it as a media attachment (image, video, or audio) to the user on WhatsApp, Telegram, WebChat, etc.
@@ -320,4 +320,4 @@ The script prints JSON with an `error` field. See the Error Handling table above
 - Key resolution order: `--api-key` flag → `RUNNINGHUB_API_KEY` env var (auto-injected by OpenClaw from `skills.entries.runninghub.apiKey` via `primaryEnv`) → direct config file read.
 - Images < 5MB are sent as base64 data URIs; larger files are uploaded first.
 - The `--task` flag auto-selects the most popular endpoint for that task type.
-- ALWAYS use `-o` to specify output path. Without it, the script saves to `/tmp/rh-output/result.<ext>`.
+- ALWAYS use `-o` to specify output path. Without it, the script saves to `/tmp/openclaw/rh-output/result.<ext>`.
