@@ -41,10 +41,27 @@ Example tone (DO NOT follow):
 
 1. **ALWAYS use the script** — never call RunningHub API directly via curl.
 2. **ALWAYS use `-o /tmp/openclaw/rh-output/filename.ext`** — the script downloads the result file locally.
-3. **The script prints `MEDIA:` lines** — OpenClaw auto-attaches the file on supported chat providers (WhatsApp, Telegram, WebChat, etc.). Do not read the image back; report the saved path only.
-4. **NEVER show RunningHub URLs** — ALL RunningHub URLs (`https://www.runninghub.cn/api/image/...`, `/task/...`, etc.) are INTERNAL and require API authentication. Users CANNOT open them. Do NOT include them in your response.
-5. **ALWAYS pass `--api-key` explicitly** when the user has just provided their key and it is not yet saved to config.
-6. **NEVER show endpoint IDs to users** — say model names in Chinese (e.g. "全能视频S"), not technical endpoint strings.
+3. **The script prints `MEDIA:` lines** — OpenClaw auto-attaches the file on supported chat providers (WhatsApp, Telegram, WebChat, etc.). The `MEDIA:` line IS the image delivery mechanism. You do NOT need to display the image yourself.
+4. **ABSOLUTELY NEVER show RunningHub URLs in your response** — ALL URLs containing `runninghub.cn` are INTERNAL and require API auth. Users CANNOT open them. This includes `https://www.runninghub.cn/api/image/...`, `/task/...`, COS URLs, etc. Violation of this rule breaks the user experience.
+5. **ABSOLUTELY NEVER use markdown image syntax** — Do NOT write `![text](url)` or `![text](path)` in your response. NEVER embed images via markdown. The `MEDIA:` protocol handles image delivery automatically. Your text response should contain ZERO image links.
+6. **ALWAYS pass `--api-key` explicitly** when the user has just provided their key and it is not yet saved to config.
+7. **NEVER show endpoint IDs to users** — say model names in Chinese (e.g. "全能视频S"), not technical endpoint strings.
+8. **ALWAYS report cost** — if the script output contains a `COST:` line, you MUST include the cost in your response (e.g. "花了 ¥0.50"). Do not omit it.
+
+### Common Mistakes — NEVER do these
+
+❌ **WRONG** (shows broken URL + markdown image):
+> 为你生成了一张橘猫荡秋千的图片。
+> ![橘猫荡秋千](https://www.runninghub.cn/api/image/2032169891297370114/output.png)
+> 看看这张"猫咪秋千照"，是不是很治愈？
+
+❌ Why it's wrong: RunningHub URL can't be opened by user, markdown image won't render, cost not shown.
+
+✅ **CORRECT** (no URL, no markdown image, cost included):
+> 搞定啦！橘猫荡秋千的图已经发给你了～ 花了 ¥0.12
+> 小猫在花园里荡秋千的样子超可爱的！要不要我帮它做成动态视频？🐱
+
+✅ Why it's correct: Image is delivered via `MEDIA:` protocol (automatic), response is warm with cost, no broken URLs.
 
 ## API key setup flow
 
@@ -369,14 +386,14 @@ The script prints a `MEDIA:` line for OpenClaw to auto-attach on supported chat 
 MEDIA:/tmp/openclaw/rh-output/puppy.png
 ```
 
-OpenClaw automatically parses this, loads the file, and sends it as a media attachment (image, video, or audio) to the user on WhatsApp, Telegram, WebChat, etc.
+**How image delivery works**: OpenClaw automatically intercepts the `MEDIA:` line, loads the local file, and sends it as a native media attachment (image/video/audio) to the user's chat (WhatsApp, Telegram, WebChat, etc.). The user receives the actual file — you do NOT need to show it.
 
-**Do not read the image back; report the saved path only.** Confirm to the user warmly and suggest next steps.
+**Your response should be TEXT ONLY.** No `![](...)`, no URLs, no file paths. Just describe what was generated, include the cost, and suggest next steps.
 
 Example responses by media type:
 
-- **Image**: "搞定啦！2K 超清大图已经发给你了～ 花了 ¥0.12。要不要我帮你把它做成视频？"
-- **Video**: "视频来啦～ 用全能视频S生成的，花了 ¥0.35。画面还满意吗？我还能帮你加配音或者做个封面图哦！"
+- **Image**: "搞定啦！橘猫荡秋千的图已经发给你了～ 花了 ¥0.12。要不要我帮你把它做成视频？🐱"
+- **Video**: "视频来啦～ 用万相2.6生成的，花了 ¥0.35。画面还满意吗？我还能帮你加配音或者做个封面图哦！"
 - **Audio**: "语音生成好了！花了 ¥0.05。试听一下，不满意我可以换个音色再来～"
 - **3D**: "3D 模型搞定！花了 ¥1.20。文件是 GLB 格式，可以直接导入 Blender 或者在浏览器里预览哦～"
 
