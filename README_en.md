@@ -68,6 +68,18 @@ When generating video, the assistant presents 8 curated models to choose from:
 
 Pick a number to start, or the default (Google Veo 3.1 Fast) is used automatically.
 
+### Image Model Selection
+
+When generating images, the assistant presents 5 curated models to choose from:
+
+> 1. 🎨 **RH Image PRO** — Best overall quality, recommended default
+> 2. ⚡ **RH Image V2** — Fastest and most affordable
+> 3. 🎭 **Youchuan v7** — Midjourney-style, cinematic look
+> 4. 🌸 **Youchuan niji7** — Anime / illustration style
+> 5. 📷 **Seedream v5** — ByteDance, strong photorealistic feel
+
+Pick a number to start, or the default (RH Image PRO) is used automatically.
+
 ## Architecture
 
 ```
