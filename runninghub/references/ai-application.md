@@ -51,7 +51,12 @@ Rules:
 - For STRING type, show current value in quotes
 - NEVER show raw nodeId/fieldName to the user — translate to friendly Chinese
 
-## Step 4 — Build and execute
+## Step 4 — Notify user, then execute
+
+**Before running the script**, ALWAYS send a progress notification via `message` tool:
+> "好的，开始运行 AI 应用啦！工作流生成通常需要 1-5 分钟，请稍等～ 🎬"
+
+This is critical — AI app tasks are slow, and users need to know the task has started. Send the notification FIRST, then execute the script.
 
 Map user's modifications to `--node` and `--file` arguments:
 

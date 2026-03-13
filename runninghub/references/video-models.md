@@ -57,6 +57,11 @@ Skip menu ONLY if: user named a specific model, or said "跟上次一样" / "再
 
 ## After Model Is Chosen
 
+**Before running the script**, ALWAYS send a progress notification via `message` tool:
+> "好嘞，开始用 XX模型 生成视频啦！一般需要 1-3 分钟，请稍等～ 🎬"
+
+This is critical — video generation takes 1-5 minutes and users need to know the task has started. Send the notification FIRST, then execute the script.
+
 Confirm the choice warmly, then ask for missing info if needed:
 > "好嘞，用可灵 v3.0 Pro！视频时长要多久？默认 5 秒，也可以选 10 秒～"
 

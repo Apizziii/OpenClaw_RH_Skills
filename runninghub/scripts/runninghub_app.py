@@ -29,7 +29,7 @@ SUBMIT_PATH = "/task/openapi/ai-app/run"
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 sys.path.insert(0, str(SCRIPT_DIR))
-from runninghub import resolve_api_key, require_api_key, cmd_check, poll_task  # noqa: E402
+from runninghub import resolve_api_key, require_api_key, cmd_check, poll_task, fix_mov_to_mp4  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
@@ -345,6 +345,7 @@ def cmd_run(args):
 
         print(f"Downloading result {i+1}/{len(file_urls)}...", file=sys.stderr)
         full_path = download_file(url, out_path)
+        fix_mov_to_mp4(full_path)
         print(f"OUTPUT_FILE:{full_path}")
 
     if consume_money is not None:

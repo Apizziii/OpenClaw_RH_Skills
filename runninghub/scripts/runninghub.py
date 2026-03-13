@@ -476,6 +476,46 @@ def download_file(url: str, output_path: str) -> str:
     return str(Path(output_path).resolve())
 
 
+import struct
+
+def fix_mov_to_mp4(file_path: str) -> bool:
+    """Rewrite QuickTime MOV ftyp box to standard MP4 for platform compatibility.
+    Only touches the ftyp header; no re-encoding, no external dependencies.
+    Returns True if the file was patched."""
+    try:
+        with open(file_path, "rb") as f:
+            header = f.read(64)
+    except OSError:
+        return False
+
+    if len(header) < 16:
+        return False
+
+    box_size = struct.unpack(">I", header[0:4])[0]
+    if header[4:8] != b"ftyp" or box_size < 16 or box_size > len(header):
+        return False
+
+    if header[8:12] != b"qt  ":
+        return False
+
+    minor_version = header[12:16]
+    brands = [b"isom", b"iso2", b"avc1", b"mp41"]
+    brands_space = box_size - 16
+    max_brands = brands_space // 4
+    used_brands = brands[:max_brands]
+
+    new_ftyp = struct.pack(">I", box_size) + b"ftyp" + b"isom" + minor_version
+    for b in used_brands:
+        new_ftyp += b
+    new_ftyp += b"\x00" * (box_size - len(new_ftyp))
+
+    with open(file_path, "r+b") as f:
+        f.write(new_ftyp)
+
+    print(f"Fixed MOV→MP4 container: {Path(file_path).name}", file=sys.stderr)
+    return True
+
+
 def build_payload(endpoint_def: dict, args) -> dict:
     """Build API payload from endpoint definition and CLI args."""
     api_key = require_api_key(args.api_key)
@@ -631,6 +671,7 @@ def cmd_execute(args):
 
     print(f"Downloading result to local file...", file=sys.stderr)
     full_path = download_file(result_url, output_path)
+    fix_mov_to_mp4(full_path)
     print(f"OUTPUT_FILE:{full_path}")
 
     if consume_money is not None:
