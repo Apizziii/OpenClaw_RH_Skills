@@ -68,7 +68,7 @@ Quick check: `python3 {baseDir}/scripts/runninghub.py --check`
 | Voice clone | `rhart-audio/text-to-audio/voice-clone` | |
 | Text to 3D | `hunyuan3d-v3.1/text-to-3d` | |
 | Image to 3D | `hunyuan3d-v3.1/image-to-3d` | |
-| Image understand | `rhart-text-g-25-pro/image-to-text` | |
+| Image understand | `rhart-text-g-3-flash-preview/image-to-text` | Preferred. Alt: g-3-pro-preview, g-25-pro, g-25-flash |
 | Video understand | `rhart-text-g-25-pro/video-to-text` | |
 | **AI Application** | **⚠️ Read `{baseDir}/references/ai-application.md`** | User provides webappId or link |
 
