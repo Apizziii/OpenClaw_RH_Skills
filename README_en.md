@@ -64,7 +64,7 @@ When generating video, the assistant presents 8 curated models to choose from:
 > 5. ✨ **Vidu Q3 Pro** — Unique stylized look
 > 6. ⭐ **Sora** — Sora-class engine
 > 7. 🌊 **MiniMax Hailuo** — Fast with fine details
-> 8. 🌱 **Seedance 2.0** — Top quality, up to 15s + auto audio, not for real people
+> 8. 🌱 **超能视频SD2.0** — Top quality, up to 15s + auto audio, not for real people
 
 Pick a number to start, or the default (Google Veo 3.1 Fast) is used automatically.
 

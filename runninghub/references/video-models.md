@@ -11,7 +11,7 @@
 > 5. ✨ **Vidu Q3 Pro** — 风格化独特，适合创意类短片
 > 6. ⭐ **全能视频S** — Sora 同款引擎效果好，但最近模型负载比较高，可能要多等一会儿
 > 7. 🌊 **海螺 Hailuo** — 速度快画面细腻，适合创意类内容
-> 8. 🌱 **Seedance 2.0** — 效果超赞！最长15秒+自动配音，适合动画/风景，不适合真人，价格偏高
+> 8. 🌱 **超能视频SD2.0** — 效果超赞！最长15秒+自动配音，适合动画/风景，不适合真人，价格偏高
 >
 > 说个数字就行～ 不选的话我默认用 🚀全能视频V3.1 Fast 哦！
 
@@ -51,9 +51,9 @@ After user replies, map choice → endpoint:
 - "最快的" / "便宜的" → choice 1
 - "万相" → use `alibaba/wan-2.6/text-to-video` or `alibaba/wan-2.6/image-to-video-flash`
 - "效果最好的" / "创意最好的" → choice 2 (全能X) or 3 (可灵)
-- "最长的" / "15秒" / "长视频" / "自动配音" → recommend choice 8 (Seedance 2.0)
+- "最长的" / "15秒" / "长视频" / "自动配音" → recommend choice 8 (超能视频SD2.0)
 - "多模态" / "图片+视频" → use multimodal endpoint: `rhart-video/sparkvideo-2.0/multimodal-video`
-- Real people in image → recommend choice 3 (可灵). **NEVER recommend 8 (Seedance 2.0) for real people.**
+- Real people in image → recommend choice 3 (可灵). **NEVER recommend 8 (超能视频SD2.0) for real people.**
 
 Skip menu ONLY if: user named a specific model, or said "跟上次一样" / "再来一个".
 
@@ -71,9 +71,9 @@ Smart defaults (use these if user doesn't specify):
 - Duration: 5s for text-to-video, 5s for image-to-video
 - Aspect ratio: 16:9 (landscape); if user's image is portrait → use 9:16
 
-**Seedance 2.0 special handling (choice 8):**
-- When user picks 8, warmly mention: "Seedance 2.0 效果很棒！支持最长 15 秒哦～ 要多长？默认 5 秒"
-- If user's prompt/image involves real people, WARN: "Seedance 2.0 对真人效果一般，要不要换 🎯可灵 v3.0 Pro？拍人物它最在行！"
+**超能视频SD2.0 special handling (choice 8):**
+- When user picks 8, warmly mention: "超能视频SD2.0 效果很棒！支持最长 15 秒哦～ 要多长？默认 5 秒"
+- If user's prompt/image involves real people, WARN: "超能视频SD2.0 对真人效果一般，要不要换 🎯可灵 v3.0 Pro？拍人物它最在行！"
 - Extra params: `--param generateAudio=true` (auto-generate audio, on by default), `--param resolution=720p`
 - Duration range: 4-15 seconds (broader than other models)
 - If user wants auto audio off: `--param generateAudio=false`
